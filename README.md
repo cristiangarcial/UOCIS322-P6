@@ -5,7 +5,7 @@ Brevet time calculator.
 
 ## Author: Cristian Garcia Leon, cgarcial@uoregon.edu ##
 
-# Project Part 4
+# ACP Brevet Calculator
 A website based on the RUSA algorithm for calculating open and close times
 based on a milepost, called brevet distance, and control posts along the way.
 
@@ -29,3 +29,4 @@ When I was doing testing, I notice that when the control distance and the brevet
 This project has been updated to include a submit and display button. When a user presses the submit button a message is displayed on the webpage notify the user that the data was submitted successfully. The distance in kms, the open, and close times are collected using the .each javascript function. Then that information is send with post to flask brevet.py. Then in flask brevet.py the information is loaded in and added to the database. When the user presses the diplay button, a new webpage is loaded and displays the information that was collected.
 
 # Project Part 6
+

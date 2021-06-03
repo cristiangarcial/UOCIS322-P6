@@ -11,7 +11,6 @@ from pymongo import MongoClient
 import json
 import arrow  # Replacement for datetime, based on moment.js
 import acp_times  # Brevet time calculations
-import config
 import logging
 
 
@@ -19,7 +18,6 @@ import logging
 # Globals
 ###
 app = flask.Flask(__name__)
-CONFIG = config.configuration()
 client = MongoClient('mongodb://' + os.environ['MONGODB_HOSTNAME'], 27017)
 db = client.tododb
 ###
@@ -62,9 +60,6 @@ def _calc_times():
     start_time = request.args.get('start_time', type=str)
     # Needed to get our input time from str to arrow object.
     arrow_start = arrow.get(start_time, "YYYY-MM-DDTHH:mm")
-    app.logger.debug("dist={}".format(brev_dist))
-    app.logger.debug("time={}".format(start_time))
-    app.logger.debug("arrow time={}".format(arrow_start))
     open_time = acp_times.open_time(km, brev_dist, arrow_start).format('YYYY-MM-DDTHH:mm')
     close_time = acp_times.close_time(km, brev_dist, arrow_start).format('YYYY-MM-DDTHH:mm')
     app.logger.debug("close time={}".format(close_time))
@@ -77,13 +72,13 @@ def someroute():
     db.tododb.drop()
     for index in brevet_input:
         item_doc = {
+            'index' : index['index'],
             'kms': index['kms'],
             'open': index['open'],
             'close': index['close']
         }
         db.tododb.insert_one(item_doc)
     app.logger.debug("brevet_data: " + str(brevet_input))
-    app.logger.debug("item_doc: " + str(item_doc))
     return redirect(url_for('index'))
    # return flask.jsonify(item_doc)
 
@@ -93,9 +88,6 @@ def dispaly():
 
 #############
 
-app.debug = CONFIG.DEBUG
-if app.debug:
-    app.logger.setLevel(logging.DEBUG)
 
 if __name__ == "__main__":
     print("Opening for global access on port {}".format(CONFIG.PORT))
