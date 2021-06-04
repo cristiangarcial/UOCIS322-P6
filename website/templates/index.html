@@ -53,32 +53,6 @@
                </div>
             </div>
          </form>
-         <script type="text/javascript">
-  
-            function calc_times(control) {
-
-                $('#display').click(
-                    function(e) {
-                    e.preventDefault();
-
-                 });
-                
-                $('#submit').click(
-                  
-                    function(e) {
-                    e.preventDefault();
-                    var brevet_data = [];
-                    $('.control').each(
-                        function(index, obj)
-                        {
-                            
-                        });
-                    $.post("/someroute", {},
-                        function(response) 
-                            {console.log("response:", response.output)}, );
-                 });
-              });
-         </script>
       </div>
    </body>
 </html>
