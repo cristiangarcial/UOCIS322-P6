@@ -12,7 +12,8 @@ import json
 import arrow  # Replacement for datetime, based on moment.js
 import acp_times  # Brevet time calculations
 import logging
-
+import config
+CONFIG = config.configuration()
 
 ###
 # Globals
@@ -72,7 +73,6 @@ def someroute():
     db.tododb.drop()
     for index in brevet_input:
         item_doc = {
-            'index' : index['index'],
             'kms': index['kms'],
             'open': index['open'],
             'close': index['close']
@@ -80,13 +80,16 @@ def someroute():
         db.tododb.insert_one(item_doc)
     app.logger.debug("brevet_data: " + str(brevet_input))
     return redirect(url_for('index'))
-   # return flask.jsonify(item_doc)
 
 @app.route("/displayroute")
 def dispaly():
     return flask.render_template('displayroute.html', items=list(db.tododb.find()))
 
 #############
+
+app.debug = CONFIG.DEBUG
+if app.debug:
+    app.logger.setLevel(logging.DEBUG)
 
 
 if __name__ == "__main__":
