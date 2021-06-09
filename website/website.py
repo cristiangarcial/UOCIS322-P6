@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, request, render_template
 import requests
 
 app = Flask(__name__)
@@ -6,22 +6,37 @@ app = Flask(__name__)
 @app.route('/')
 @app.route('/index')
 def home():
-    render_template('index.html')
+    return render_template('index.html')
 
-@app.route('/listall')
-def listAll():
-    r = requests.get('http://restapi:5000/listAll')
+
+@app.route('/list')
+def list():
+    csv_or_json = request.args.get('csv_or_json', type=str)
+    topk= str(request.args.get('topk', type=int))
+    r = requests.get(f'http://restapi:5000/listAll/{csv_or_json}?topk={topk}')
     return r.text
 
-@app.route('/listOpenOnly')
-def listOpenOnly():
-    r = requests.get('http://restapi:5000/listOpenOnly')
-    return r.text
 
-@app.route('/listCloseOnly')
-def listCloseOnly():
-    r = requests.get('http://restapi:5000/listCloseOnly')
-    return r.text
+ #  @app.route('/listAll')
+ #   def listAll():
+ #       csv_or_json = request.args.get('csv_or_json', type=str)
+ #       topk= str(request.args.get('topk', type=int))
+ #       r = requests.get(f'http://restapi:5000/listAll/') # {csv_or_json}?topk={topk}')
+ #       return r.text
+
+ #   @app.route('/listOpenOnly')
+ #   def listOpenOnly():
+ #       csv_or_json = request.args.get('csv_or_json', type=str)
+ #       topk= str(request.args.get('topk', type=int))
+ #       r = requests.get(f'http://restapi:5000/listOpenOnly/{csv_or_json}?topk={topk}')
+ #       return r.text
+
+ #  @app.route('/listCloseOnly')
+ #   def listCloseOnly():
+ #       csv_or_json = request.args.get('csv_or_json', type=str)
+ #       topk= str(request.args.get('topk', type=int))
+ #       r = requests.get(f'http://restapi:5000/listCloseOnly/{csv_or_json}?topk={topk}')
+ #       return r.text
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', debug=True)

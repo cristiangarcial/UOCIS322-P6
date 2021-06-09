@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, request
 from flask_restful import Resource, Api
 from pymongo import MongoClient
 from bson.json_util import dumps, loads
@@ -17,9 +17,9 @@ def csv_format(brevet_data):
 
 class listAll(Resource):
     def get(self, dtype="JSON"):
-        topk = request.args.get('dtype', defualt=-1, type=int)
-        if topk < -1:
-            return "Error" 
+        topk = request.args.get('dtype', default=-1, type=int)
+        if topk < -1 or  topk is None:
+            topk = db.tododb.count();
         if topk == -1:
             brevet_data = db.tododb.find({}, {"_id": 0, "open": 1, "close": 1}) 
         else:
@@ -30,11 +30,13 @@ class listAll(Resource):
 
 class listOpenOnly(Resource):
     def get(self, dtype="JSON"):
-        topk = request.args.get('top', defualt=-1, type=int)
+        topk = request.args.get('top', default=-1, type=int)
+        if topk < -1 or topk is None:
+            topk = db.tododb.count();
         if topk < -1:
             return "Error" 
         if topk == -1:
-            brevet_data = db.tododb.find({}, {"_id": 0, "open": 1,}) 
+            brevet_data = db.tododb.find({}, {"_id": 0, "open": 1}) 
         else:
             brevet_data = db.tododb.find({}, {"_id": 0, "open": 1}).limit(topk) 
         if dtype == 'csv':
@@ -43,11 +45,13 @@ class listOpenOnly(Resource):
 
 class listCloseOnly(Resource):
     def get(self, dtype="JSON"):
-        topk = request.args.get('top', defualt=-1, type=int)
+        topk = request.args.get('top', default=-1, type=int)
+        if topk < -1 or topk is None:
+            topk = db.tododb.count();
         if topk < -1:
             return "Error" 
         if topk == -1:
-            brevet_data = db.tododb.find({}, {"_id": 0, "close": 1,}) 
+            brevet_data = db.tododb.find({}, {"_id": 0, "close": 1}) 
         else:
             brevet_data = db.tododb.find({}, {"_id": 0, "close": 1}).limit(topk) 
         if dtype == 'csv':
